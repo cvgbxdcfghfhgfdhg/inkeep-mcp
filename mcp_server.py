@@ -46,7 +46,6 @@ def handle_list_tools(id):
                             "source": {
                                 "type": "string",
                                 "description": f"The documentation source alias (e.g. {aliases[0] if aliases else 'langfuse'}) or a full URL." 
-                                # 移除 'enum'，允许模型尝试新添加的 alias
                             },
                             "question": {
                                 "type": "string",
@@ -66,7 +65,6 @@ def handle_call_tool(id, params):
 
     # Tool: list_documentation_sources
     if name == "list_documentation_sources":
-        # 每次调用都重新读取磁盘，确保获取最新列表
         current_registry = SiteRegistry() 
         sites = current_registry.list_sites()
         
@@ -87,16 +85,13 @@ def handle_call_tool(id, params):
         source = args.get("source")
         question = args.get("question")
         
-        # 重新实例化 Registry 以获取最新数据（处理用户在 CLI add 后的情况）
         current_registry = SiteRegistry()
         target_url = current_registry.get_url(source)
         
         if not target_url:
-            # Fallback for full URLs
             if source.startswith("http"):
                 target_url = source
             else:
-                # 返回包含最新可用列表的错误信息，帮助 Agent 自我修正
                 available = ", ".join(current_registry.list_sites().keys())
                 return {
                     "jsonrpc": "2.0",
@@ -146,28 +141,59 @@ def handle_call_tool(id, params):
     }
 
 def main():
+    # 简单的参数处理：如果用户输入 --help，提示这不是 CLI 工具
+    if len(sys.argv) > 1 and sys.argv[1] in ["--help", "-h"]:
+        print("Inkeep MCP Server")
+        print("Usage: This script is intended to be run by an MCP client (e.g. Claude Desktop, Gemini CLI) via stdio.")
+        print("To use the human-friendly CLI, run: python3 cli.py --help")
+        sys.exit(0)
+
     logger.info("Inkeep MCP Server Started")
     
     while True:
         try:
             line = sys.stdin.readline()
-            if not line: break
+            if not line:
+                break
+            
             request = json.loads(line)
+            method = request.get("method")
+            req_id = request.get("id")
             
             response = None
-            if request.get("method") == "tools/list":
-                response = handle_list_tools(request.get("id"))
-            elif request.get("method") == "tools/call":
-                response = handle_call_tool(request.get("id"), request.get("params"))
-            elif request.get("method") == "initialize":
-                 response = {"jsonrpc": "2.0", "id": request.get("id"), "result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "inkeep-mcp", "version": "2.1.0"}}}
-            elif request.get("method") == "ping":
-                 response = {"jsonrpc": "2.0", "id": request.get("id"), "result": {}}
+            
+            if method == "tools/list":
+                response = handle_list_tools(req_id)
+            elif method == "tools/call":
+                response = handle_call_tool(req_id, request.get("params"))
+            elif method == "initialize":
+                 response = {
+                     "jsonrpc": "2.0",
+                     "id": req_id,
+                     "result": {
+                         "protocolVersion": "2024-11-05",
+                         "capabilities": {"tools": {}},
+                         "serverInfo": {"name": "inkeep-mcp", "version": "2.1.0"}
+                     }
+                 }
+            elif method == "notifications/initialized":
+                continue
+            elif method == "ping":
+                 response = {"jsonrpc": "2.0", "id": req_id, "result": {}}
             
             if response:
                 sys.stdout.write(json.dumps(response) + "\n")
                 sys.stdout.flush()
-        except: pass
+
+        except KeyboardInterrupt:
+            # 允许 Ctrl+C 正常退出
+            logger.info("Server stopped by user.")
+            sys.exit(0)
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON received")
+        except Exception as e:
+            # 只捕获常规异常，不捕获 SystemExit/KeyboardInterrupt
+            logger.error(f"Error: {e}")
 
 if __name__ == "__main__":
     main()

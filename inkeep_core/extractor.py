@@ -10,11 +10,9 @@ class ConfigExtractor:
         """
         Scans the target URL for Inkeep configuration (API Key, etc.)
         """
-        print(f"[Extractor] Scanning {target_url}...", end="", flush=True)
         try:
             res = self.session.get(target_url, timeout=15)
             if res.status_code != 200:
-                print(f" Failed (Status {res.status_code})")
                 return None
             
             # 1. Identify Script Candidates
@@ -40,7 +38,6 @@ class ConfigExtractor:
                     others.append(full_s)
             
             final_list = list(dict.fromkeys(candidates + others))
-            print(f" Found {len(final_list)} JS files.")
             
             # 2. Scan Scripts
             patterns = [
@@ -59,14 +56,11 @@ class ConfigExtractor:
                             if match:
                                 val = match.group(1)
                                 if key_name == 'apiKey': # Primary target
-                                    print(f"[Extractor] Found apiKey in {js_url.split('/')[-1]}")
                                     return {"apiKey": val}
                 except Exception:
                     continue
             
-            print("[Extractor] No configuration found.")
             return None
 
         except Exception as e:
-            print(f"[Extractor] Error: {e}")
             return None
